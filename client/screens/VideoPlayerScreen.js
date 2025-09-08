@@ -34,13 +34,13 @@ export default function VideoPlayerScreen({ route }) {
 
     hideControlsTimeout.current = setTimeout(() => {
       fadeOutControls();
-    }, 3000);
+    }, 1000);
   };
 
   const fadeOutControls = () => {
     Animated.timing(controlsOpacity, {
       toValue: 0,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     }).start(() => {
       setShowControls(false);
@@ -53,7 +53,7 @@ export default function VideoPlayerScreen({ route }) {
     setShowControls(true);
     Animated.timing(controlsOpacity, {
       toValue: 1,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     }).start(() => {
       startHideControlsTimer();
