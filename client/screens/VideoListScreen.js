@@ -12,11 +12,11 @@ import axios from 'axios';
 import { API_BASE_URL } from '@env';
 
 export default function VideoListScreen({ navigation }) {
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [videos, setVideos] = useState([]);   // stores the fetched array of videos
+  const [loading, setLoading] = useState(true);   // loading state
+  const [refreshing, setRefreshing] = useState(false);   // pull to refresh
 
-  const fetchVideos = async () => {
+  const fetchVideos = async () => {   // fetches the videos from backend
     try {
       const res = await axios.get(`${API_BASE_URL}/videos`);
       setVideos(res.data);
@@ -27,19 +27,19 @@ export default function VideoListScreen({ navigation }) {
     }
   };
 
-  const onRefresh = async () => {
+  const onRefresh = async () => {   // handles pull to refresh gesture
     setRefreshing(true);
     await fetchVideos();
     setRefreshing(false);
   };
 
-  useEffect(() => {
+  useEffect(() => {   // load the videos on initial load
     fetchVideos();
   }, []);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (   // renders a single video inside list
     <Pressable
-      onPress={() => navigation.navigate('VideoPlayer', { videoId: item.videoId })}
+      onPress={() => navigation.navigate('VideoPlayer', { videoId: item.videoId })}  // navigate to VideoPlayer screen
       style={({ pressed }) => [
         styles.card,
         { opacity: pressed ? 0.9 : 1 },
@@ -63,7 +63,7 @@ export default function VideoListScreen({ navigation }) {
   }
 
   return (
-    <FlatList
+    <FlatList   // renders list of videos
       data={videos}
       keyExtractor={item => item.videoId}
       renderItem={renderItem}

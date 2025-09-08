@@ -1,11 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Animated,
-} from 'react-native';
+import React, { useState, useRef, useEffect} from 'react';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -13,23 +7,21 @@ import { MaterialIcons } from '@expo/vector-icons';
 export default function VideoPlayerScreen({ route }) {
   const { videoId } = route.params;
 
-  const [isLandscape, setIsLandscape] = useState(false);
-  const [showControls, setShowControls] = useState(true);
-  const [playing, setPlaying] = useState(true);
+  const [isLandscape, setIsLandscape] = useState(false);   // orientation toggle
+  const [showControls, setShowControls] = useState(true);   // controls show/hide
 
-  const controlsOpacity = useRef(new Animated.Value(1)).current;
-  const playerRef = useRef(null);
-  const hideControlsTimeout = useRef(null);
+  const controlsOpacity = useRef(new Animated.Value(1)).current;   // manages control overlay's opacity
+  const hideControlsTimeout = useRef(null);   // hides overlay
 
-  const portraitWidth = Dimensions.get('window').width;
+  const portraitWidth = Dimensions.get('window').width;  // dynamically calculates dimensions based on screen size
   const portraitHeight = (portraitWidth * 9) / 16;
   const landscapeHeight = Dimensions.get('window').height;
   const landscapeWidth = (landscapeHeight * 16) / 9;
 
-  const videoWidth = isLandscape ? landscapeWidth : portraitWidth;
+  const videoWidth = isLandscape ? landscapeWidth : portraitWidth;  // choose dimensions acc to orientation
   const videoHeight = isLandscape ? landscapeHeight : portraitHeight;
 
-  const startHideControlsTimer = () => {
+  const startHideControlsTimer = () => {   // hides overlay
     if (hideControlsTimeout.current) clearTimeout(hideControlsTimeout.current);
 
     hideControlsTimeout.current = setTimeout(() => {
@@ -37,7 +29,7 @@ export default function VideoPlayerScreen({ route }) {
     }, 1000);
   };
 
-  const fadeOutControls = () => {
+  const fadeOutControls = () => { 
     Animated.timing(controlsOpacity, {
       toValue: 0,
       duration: 200,
@@ -71,7 +63,7 @@ export default function VideoPlayerScreen({ route }) {
     }
   };
 
-  const toggleOrientation = async () => {
+  const toggleOrientation = async () => {   // toggle between landscape/portrait
     if (isLandscape) {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
       setIsLandscape(false);
@@ -81,13 +73,7 @@ export default function VideoPlayerScreen({ route }) {
     }
   };
 
-  const onStateChange = useCallback((state) => {
-    if (state === 'ended') {
-      setPlaying(false);
-    }
-  }, []);
-
-  useEffect(() => {
+  useEffect(() => {   // start auto hide timer on screen mount
     startHideControlsTimer();
 
     return () => {
@@ -98,13 +84,10 @@ export default function VideoPlayerScreen({ route }) {
   return (
   <View style={[styles.container]} pointerEvents="box-none">
     <View pointerEvents="box-none" style={{ width: videoWidth, height: videoHeight }}>
-      <YoutubePlayer
-        ref={playerRef}
+      <YoutubePlayer   // embeds the youtube video via iframe
         height={videoHeight}
         width={videoWidth}
         videoId={videoId}
-        play={playing}
-        onChangeState={onStateChange}
         webViewStyle={{ backgroundColor: '#000' }}
         playerParams={{
           controls: 0,
@@ -116,7 +99,7 @@ export default function VideoPlayerScreen({ route }) {
         }}
       />
 
-      <Animated.View
+      <Animated.View  // orientation toggle
         style={[
           styles.controlsContainer,
           { opacity: controlsOpacity, width: videoWidth, height: videoHeight },
@@ -135,7 +118,7 @@ export default function VideoPlayerScreen({ route }) {
       </Animated.View>
     </View>
 
-    <TouchableOpacity
+    <TouchableOpacity   // captures screen taps for interface hide/show
       activeOpacity={1}
       onPress={onScreenTap}
       style={{
