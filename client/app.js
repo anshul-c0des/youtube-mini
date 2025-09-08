@@ -12,7 +12,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="VideoList">
         <Stack.Screen name="VideoList" component={VideoListScreen} options={{ title: 'Videos' }} />
-        <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} options={{ title: 'Play Video' }} />
+        <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
